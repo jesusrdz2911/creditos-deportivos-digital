@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block titulo %}Verificar{% endblock %}
+{% block contenido %}
+<h1>Verificar constancia</h1>
+<form method="post" class="card">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <label for="folio">Folio (o escanea el QR del documento)</label>
+  <input id="folio" name="folio" type="text" placeholder="CCD-2026-XXXXXX" required>
+  <p><button>Verificar</button></p>
+</form>
+<h2>Constancias emitidas</h2>
+<div class="tabla-scroll"><table>
+  <thead><tr><th>Folio</th><th>Estudiante</th><th>Actividad</th><th>Asistencia</th><th>Emitida</th></tr></thead>
+  <tbody>
+  {% for c in constancias %}
+    <tr><td><a href="{{ url_for('main.verificar', folio=c.folio) }}"><code>{{ c.folio }}</code></a></td>
+        <td>{{ c.nombre }}</td><td>{{ c.actividad }}</td><td>{{ '%.0f'|format(c.porcentaje) }} %</td><td>{{ c.emitida_en }}</td></tr>
+  {% else %}<tr><td colspan="5">Aún no hay constancias.</td></tr>{% endfor %}
+  </tbody>
+</table></div>
+{% endblock %}

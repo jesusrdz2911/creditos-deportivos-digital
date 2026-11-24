@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titulo %}Créditos deportivos{% endblock %} · Prototipo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header><div class="bar">
+  <strong>Créditos deportivos</strong>
+  <nav aria-label="Principal">
+  {% if user %}
+    {% if user.rol == 'estudiante' %}
+      <a href="{{ url_for('main.actividades') }}">Actividades</a>
+      <a href="{{ url_for('main.mis_actividades') }}">Mi avance</a>
+    {% elif user.rol == 'promotor' %}
+      <a href="{{ url_for('main.promotor_home') }}">Mis grupos</a>
+    {% else %}
+      <a href="{{ url_for('main.escolares') }}">Verificar constancias</a>
+    {% endif %}
+  {% endif %}
+  </nav>
+  {% if user %}
+  <span class="quien">{{ user.nombre }}</span>
+  <form method="post" action="{{ url_for('main.logout') }}" style="margin:0">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button class="sec" style="padding:4px 12px;min-height:32px">Salir</button>
+  </form>
+  {% endif %}
+</div></header>
+<main>
+{% for cat, msg in get_flashed_messages(with_categories=true) %}
+  <div class="flash {{ cat }}" role="status">{{ msg }}</div>
+{% endfor %}
+{% block contenido %}{% endblock %}
+</main>
+</body>
+</html>

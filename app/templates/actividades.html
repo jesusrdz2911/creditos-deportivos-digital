@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block titulo %}Actividades{% endblock %}
+{% block contenido %}
+<h1>Elige tu actividad deportiva</h1>
+<p class="sub">Inscríbete en línea y consulta cupos y horarios.</p>
+<div class="grid">
+{% for a in actividades %}
+  <article class="card">
+    <h2 style="margin-top:0">{{ a.nombre }}</h2>
+    <p class="meta">{{ a.horario }} · {{ a.periodo }}</p>
+    <p class="meta">Promotor: {{ a.promotor }}</p>
+    {% set libres = a.cupo - a.usados %}
+    <p>
+      {% if a.inscrito %}<span class="badge b-ok">Ya estás inscrito</span>
+      {% elif libres <= 0 %}<span class="badge b-err">Sin cupo</span>
+      {% else %}<span class="badge b-warn">{{ libres }} lugar{{ '' if libres == 1 else 'es' }} disponible{{ '' if libres == 1 else 's' }}</span>{% endif %}
+    </p>
+    <form method="post">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+      <input type="hidden" name="actividad_id" value="{{ a.id }}">
+      <button {% if a.inscrito or libres <= 0 %}disabled{% endif %}>Inscribirme</button>
+    </form>
+  </article>
+{% endfor %}
+</div>
+{% endblock %}

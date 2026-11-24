@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block titulo %}Mi avance{% endblock %}
+{% block contenido %}
+<h1>Mi avance</h1>
+{% for i in items %}
+  {% set cumple = i.pct >= i.minimo_pct %}
+  <article class="card">
+    <h2 style="margin-top:0">{{ i.nombre }} <span class="meta">· {{ i.periodo }}</span></h2>
+    <p class="meta">{{ i.horario }} · Promotor: {{ i.promotor }}</p>
+    <div class="bar-prog {{ 'ok' if cumple }}" role="progressbar" aria-valuenow="{{ i.pct|round|int }}" aria-valuemin="0" aria-valuemax="100" aria-label="Asistencia">
+      <span style="width:{{ [i.pct,100]|min }}%"></span></div>
+    <p class="meta">Asistencia: <strong>{{ '%.0f'|format(i.pct) }} %</strong> · mínimo {{ i.minimo_pct }} % ·
+      {{ i.registradas }} de {{ i.sesiones_totales }} sesiones registradas</p>
+    {% if i.folio %}
+      <p><span class="badge b-ok">Constancia emitida</span> Folio <code>{{ i.folio }}</code></p>
+      <a class="btn" href="{{ url_for('main.constancia_descarga', folio=i.folio) }}" target="_blank" rel="noopener">Descargar constancia (PDF)</a>
+    {% elif cumple %}
+      <p><span class="badge b-warn">Cumples el mínimo</span> Tu promotor puede autorizar la constancia.</p>
+    {% else %}
+      <p><span class="badge b-warn">En curso</span></p>
+    {% endif %}
+  </article>
+{% else %}
+  <p>Aún no estás inscrito en ninguna actividad. <a href="{{ url_for('main.actividades') }}">Ver actividades</a></p>
+{% endfor %}
+{% endblock %}

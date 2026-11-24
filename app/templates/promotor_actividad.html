@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ act.nombre }}{% endblock %}
+{% block contenido %}
+<p><a href="{{ url_for('main.promotor_home') }}">← Mis grupos</a></p>
+<h1>{{ act.nombre }}</h1>
+<p class="sub">{{ act.horario }} · {{ act.periodo }} · Mínimo para acreditar: {{ act.minimo_pct }} % · {{ registradas }} de {{ act.sesiones_totales }} sesiones registradas</p>
+
+<h2>Acreditación</h2>
+<div class="tabla-scroll"><table>
+  <thead><tr><th>Estudiante</th><th>Asistencia</th><th>Estado</th><th></th></tr></thead>
+  <tbody>
+  {% for a in alumnos %}
+    <tr>
+      <td>{{ a.nombre }}<br><span class="meta">{{ a.no_control }}</span></td>
+      <td>{{ '%.0f'|format(a.pct) }} %</td>
+      <td>{% if a.folio %}<span class="badge b-ok">Constancia emitida</span>
+          {% elif a.cumple %}<span class="badge b-warn">Listo para autorizar</span>
+          {% else %}<span class="badge b-err">No alcanza el mínimo</span>{% endif %}</td>
+      <td>
+        {% if a.folio %}
+          <a class="btn sec" href="{{ url_for('main.constancia_descarga', folio=a.folio) }}" target="_blank" rel="noopener">Ver PDF</a>
+        {% else %}
+          <form method="post" style="margin:0">
+            <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+            <input type="hidden" name="accion" value="constancia">
+            <input type="hidden" name="inscripcion_id" value="{{ a.inscripcion_id }}">
+            <button {% if not a.cumple %}disabled{% endif %}>Autorizar constancia</button>
+          </form>
+        {% endif %}
+      </td>
+    </tr>
+  {% else %}<tr><td colspan="4">Aún no hay estudiantes inscritos.</td></tr>{% endfor %}
+  </tbody>
+</table></div>
+
+<h2>Pasar lista</h2>
+<form method="post" class="card">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <input type="hidden" name="accion" value="sesion">
+  <label for="fecha">Fecha de la sesión</label>
+  <input id="fecha" name="fecha" type="date" value="{{ hoy }}" required>
+  <p class="meta">Marca a quienes asistieron.</p>
+  {% for a in alumnos %}
+    <label class="check"><input type="checkbox" name="presente" value="{{ a.estudiante_id }}"> {{ a.nombre }}</label>
+  {% else %}<p>No hay estudiantes inscritos.</p>{% endfor %}
+  <p><button {% if not alumnos or registradas >= act.sesiones_totales %}disabled{% endif %}>Guardar lista</button></p>
+</form>
+{% endblock %}

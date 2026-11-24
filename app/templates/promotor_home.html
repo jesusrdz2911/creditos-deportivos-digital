@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block titulo %}Mis grupos{% endblock %}
+{% block contenido %}
+<h1>Mis grupos</h1>
+<div class="grid">
+{% for a in actividades %}
+  <article class="card">
+    <h2 style="margin-top:0">{{ a.nombre }}</h2>
+    <p class="meta">{{ a.horario }} · {{ a.periodo }}</p>
+    <p class="meta">{{ a.inscritos }} de {{ a.cupo }} inscritos · {{ a.registradas }} de {{ a.sesiones_totales }} sesiones</p>
+    <a class="btn" href="{{ url_for('main.promotor_actividad', actividad_id=a.id) }}">Abrir grupo</a>
+  </article>
+{% else %}<p>No tienes grupos asignados.</p>{% endfor %}
+</div>
+{% endblock %}

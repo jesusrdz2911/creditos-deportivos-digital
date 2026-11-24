@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block titulo %}Verificación{% endblock %}
+{% block contenido %}
+<div class="card res">
+{% if r and r.valida %}
+  <div class="icono" aria-hidden="true">✅</div>
+  <h1>Constancia válida</h1>
+  <p class="sub">El sello coincide con lo registrado. Compara estos datos con el documento impreso.</p>
+  <table style="max-width:520px;margin:12px auto;text-align:left">
+    <tr><th>Folio</th><td><code>{{ r.datos.folio }}</code></td></tr>
+    <tr><th>Estudiante</th><td>{{ r.datos.nombre }}</td></tr>
+    <tr><th>No. de control</th><td>{{ r.datos.no_control or '-' }}</td></tr>
+    <tr><th>Actividad</th><td>{{ r.datos.actividad }} ({{ r.datos.periodo }})</td></tr>
+    <tr><th>Asistencia</th><td>{{ '%.0f'|format(r.datos.porcentaje) }} %</td></tr>
+    <tr><th>Autorizó</th><td>{{ r.datos.promotor }}</td></tr>
+    <tr><th>Emitida</th><td>{{ r.datos.emitida_en }}</td></tr>
+  </table>
+{% elif r %}
+  <div class="icono" aria-hidden="true">⚠️</div>
+  <h1>El sello no coincide</h1>
+  <p>Los datos guardados no corresponden al sello emitido. No consideres válida esta constancia.</p>
+{% else %}
+  <div class="icono" aria-hidden="true">❌</div>
+  <h1>Folio no encontrado</h1>
+  <p>No existe una constancia con el folio <code>{{ folio }}</code>. Revisa que esté bien escrito.</p>
+{% endif %}
+</div>
+{% endblock %}

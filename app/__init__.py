@@ -21,6 +21,12 @@ def create_app(config=None):
 
     app.teardown_appcontext(database.close_db)
 
+    # En servicios gratuitos el disco se borra al reiniciar: si no hay base, se recrea con datos simulados.
+    if not app.config.get("TESTING") and not os.path.exists(app.config["DATABASE"]):
+        with app.app_context():
+            database.init_db()
+            database.seed_db()
+
     from .views import bp
     app.register_blueprint(bp)
 

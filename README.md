@@ -1,5 +1,7 @@
 # Créditos deportivos digital (prototipo)
 
+**Prototipo en línea:** https://tu-enlace.onrender.com
+
 Plataforma web para gestionar el crédito complementario deportivo: inscripción en línea, asistencia
 por sesión, acreditación con mínimo configurable y constancia en PDF con folio, sello digital y QR
 verificable. Prototipo escolar de la materia SCC-1007 con **datos 100 % simulados**.
